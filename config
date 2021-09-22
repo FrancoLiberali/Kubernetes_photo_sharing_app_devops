@@ -1,0 +1,8 @@
+Host bastion
+  Hostname 10.29.244.83
+  User ubuntu
+
+Host mongo
+  Hostname 192.168.2.2
+  ProxyJump bastion
+  User ubuntu
