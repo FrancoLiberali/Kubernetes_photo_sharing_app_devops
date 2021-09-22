@@ -95,6 +95,7 @@ resources:
       name: mongo
       flavor: m1.small
       network_port: { get_resource: mongo_port}
+      ssh_keys: {get_param: ssh_keys}
 
 
 
