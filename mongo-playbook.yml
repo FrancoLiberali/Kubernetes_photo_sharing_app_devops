@@ -3,12 +3,17 @@
   remote_user: root
   become: yes
   tasks:
-    - name: Install prerequisits
+    - name: Export proxy
+      shell: export http_proxy=http://proxy.rennes.enst-bretagne.fr:3128 & export https_proxy=http://proxy.rennes.enst-bretagne.fr:3128
+    - name: Install prerequisites
       apt: pkg=gnupg state=latest update_cache=yes
     - name: Import the public key used by the package management system
       apt_key:
         url: 'https://www.mongodb.org/static/pgp/server-5.0.asc'
         state: present
+      environment:
+          no_proxy: 127.0.0.1, localhost, registry.cloud.rennes.enst-bretagne.fr, gitlab-devops.cloud.rennes.enst-bretagne.fr, openstack.imt-atlantique.fr, `echo 192.168.10.{1..253},` 192.168.10.254
+          https_proxy: 'http://proxy.rennes.enst-bretagne.fr:3128'
     - name: Add MongoDB repository
       apt_repository: repo='deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/5.0 multiverse' state=present
     - name: install mongodb
