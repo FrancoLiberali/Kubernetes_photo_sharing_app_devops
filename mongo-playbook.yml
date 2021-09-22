@@ -20,7 +20,18 @@
       apt: pkg=mongodb-org state=latest update_cache=yes
       notify:
       - start mongodb
+    - name: copy config file
+      copy:
+        src: mongod.conf
+        dest: /etc/mongod.conf
+        owner: root
+        group: root
+        mode: 0644
+      notify:
+        - restart mongodb
 
   handlers:
   - name: start mongodb
     service: name=mongod state=started
+  - name: restart mongodb
+    service: name=mongod state=restarted
