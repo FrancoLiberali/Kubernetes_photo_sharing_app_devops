@@ -87,7 +87,7 @@ resources:
       security_groups: [ get_resource: internal_security_group]
       fixed_ips:
         - subnet_id: { get_resource: private_subnet}
-          ip_address: 192.168.2.2
+          ip_address: 192.168.10.4
 
   mongo:
     type: vm-template.yaml
