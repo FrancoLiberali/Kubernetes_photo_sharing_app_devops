@@ -1,0 +1,65 @@
+---
+- hosts: all
+  remote_user: root
+  become: yes
+  tasks:
+    - name: Install prerequisites
+      apt:
+        pkg:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - gnupg-agent
+          - software-properties-common
+        update_cache: yes
+      environment:
+          https_proxy: http://proxy.rennes.enst-bretagne.fr:3128
+          http_proxy: http://proxy.rennes.enst-bretagne.fr:3128
+
+    - name: Import the public key used by the package management system
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+      environment:
+          https_proxy: http://proxy.rennes.enst-bretagne.fr:3128
+          http_proxy: http://proxy.rennes.enst-bretagne.fr:3128
+
+    - name: Add repository
+      apt_repository:
+        repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable
+        state: present  
+
+    - name: install docker
+      apt:
+        pkg: 
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+        update_cache: yes
+      environment:
+          https_proxy: http://proxy.rennes.enst-bretagne.fr:3128
+          http_proxy: http://proxy.rennes.enst-bretagne.fr:3128
+
+    - name: modify groups
+      shell: usermod -aG docker $USER
+      notify:
+        - start docker
+
+    - name: copy config file
+      lineinfile:
+        path: /lib/systemd/system/docker.service
+        state: present
+        line: Environment="HTTP_PROXY=http://proxy.rennes.enst-bretagne.fr:3128" "HTTPS_PROXY=http://proxy.rennes.enst-bretagne.fr:3128" "NO_PROXY=gitlab-devops.cloud.rennes.enst-bretagne.fr:4567"
+      notify:
+        - restart docker
+
+  handlers:
+  - name: start docker
+    service:
+      name: docker
+      state: started
+      enabled: yes
+  - name: restart docker
+    service:
+      name: docker
+      state: restarted
