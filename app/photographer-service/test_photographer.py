@@ -78,3 +78,38 @@ def test_has_more_true_photographers():
     assert response3.status_code == 200
     assert response3.json()['has_more'] == True
 
+@pytest.mark.usefixtures("clearPhotographers")
+@pytest.mark.usefixtures("initDB")
+def test_delete_one_photographer_that_exists_works():
+    response = client.post('/photographers',
+                           headers=headers_content,
+                           data=json.dumps(data1))
+    assert response.status_code == 201
+
+    display_name = data1["display_name"]
+
+    response = client.get(f'/photographer/{display_name}',
+                           headers=headers_content)
+    assert response.status_code == 200
+    assert response.json()['display_name'] == display_name
+
+    response = client.delete(f'/photographer/{display_name}',
+                           headers=headers_content)
+    assert response.status_code == 200
+
+    response = client.get(f'/photographer/{display_name}',
+                           headers=headers_content)
+    assert response.status_code == 404
+
+@pytest.mark.usefixtures("clearPhotographers")
+@pytest.mark.usefixtures("initDB")
+def test_delete_one_photographer_that_doesnt_exists_raise_404():
+    display_name = data1["display_name"]
+
+    response = client.get(f'/photographer/{display_name}',
+                           headers=headers_content)
+    assert response.status_code == 404
+
+    response = client.delete(f'/photographer/{display_name}',
+                           headers=headers_content)
+    assert response.status_code == 404
