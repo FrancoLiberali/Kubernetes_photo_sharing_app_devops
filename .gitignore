@@ -137,5 +137,5 @@ dmypy.json
 # Cython debug symbols
 cython_debug/
 
-grpc_fastapi/dev.env
+dev.env
 grpc_fastapi/grpc-hello-service/__pycache__
