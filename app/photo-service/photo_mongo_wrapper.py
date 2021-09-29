@@ -20,14 +20,14 @@ import json
 import robustify
 
 @robustify.retry_mongo
-def mongo_save_photo(upfile, display_name, photo_id):
+def mongo_save_photo(upfile, display_name, photo_id, tags):
     try:
         photo = Photo(image_file=upfile, photo_id=photo_id, display_name=display_name,
                       comment="unset",
                       author="unset",
                       title="unset",
                       location="unset",
-                      tags=[])
+                      tags=tags)
         photo.save()
     except (IOError):
         return False

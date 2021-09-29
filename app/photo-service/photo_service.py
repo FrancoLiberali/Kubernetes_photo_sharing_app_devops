@@ -14,6 +14,11 @@ from photo_mongo_wrapper import *
 import requests
 import re
 
+import grpc
+
+import tags_pb2
+import tags_pb2_grpc
+
 
 photographer_service_host = 'photographer-service:80'
 tags_service_host = 'tags-service:50051'
@@ -31,25 +36,36 @@ app = FastAPI(title = "Photo Service")
 gunicorn_logger = logging.getLogger('gunicorn.error')
 logger.handlers = gunicorn_logger.handlers
 
+channel = None
 
 @app.on_event("startup")
 def startup_event():
+    global channel
     connect("photos", host= mongo_service)
+    channel = grpc.insecure_channel(tags_service)
 
 
 @app.post("/gallery/{display_name}", status_code=201)
 def upload_photo(response: Response, display_name:str, file: UploadFile=File(...)):
-    logger.info("Uploading a new image ...")            
+    logger.info("Uploading a new image ...")
     try:
         photographer = requests.get(photographer_service + 'photographer/' + display_name,
                                     timeout=REQUEST_TIMEOUT)
         if photographer.status_code == requests.codes.ok:
             id = mongo_allocate_photo_id(display_name)
 
+            # Get the tags from tags service
+            stub = tags_pb2_grpc.TagsStub(channel)
+            tags = stub.getTags(
+                    tags_pb2.ImageRequest(
+                        file=file.file.read()
+                    )
+                ).tags
+
             # We save the photo
-            if mongo_save_photo(file.file, display_name, id):
+            if mongo_save_photo(file.file, display_name, id, tags):
                 response.headers["Location"] = "/photo/" + display_name + "/" + str(id)
-                logger.info("A new image has been uploaded ...")            
+                logger.info("A new image has been uploaded ...")
             else:
                 raise HTTPException(status_code = 503, detail = "Mongo unavailable")
             # We save the tags
