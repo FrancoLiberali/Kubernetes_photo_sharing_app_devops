@@ -66,7 +66,7 @@ def mongo_delete_photo_by_name_and_id(display_name, photo_id):
     except (pymongo.errors.AutoReconnect,
             pymongo.errors.ServerSelectionTimeoutError,
             pymongo.errors.NetworkTimeout) as e:
-        raise 
+        raise
     except (Photo.DoesNotExist) as e:
         return False
     ph.delete()

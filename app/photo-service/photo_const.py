@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from pydantic import BaseModel, Schema
+from pydantic import BaseModel
 from typing import List
 
 REQUEST_TIMEOUT = 5

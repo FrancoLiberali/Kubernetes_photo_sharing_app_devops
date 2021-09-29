@@ -2,7 +2,7 @@ import pytest
 from starlette.testclient import TestClient
 from bson import json_util
 from photo_service import app
-import base64,zlib, shutil
+import base64, zlib, shutil
 from io import BytesIO
 
 import unittest.mock
@@ -14,13 +14,41 @@ client = TestClient(app)
 @pytest.mark.usefixtures("clearPhotos")
 @pytest.mark.usefixtures("initDB")
 def test_post_once(requests_get):
+    response = upload_photo(requests_get)
 
+    assert response.headers['Location']
+    assert response.status_code == 201
+
+@unittest.mock.patch('photo_service.requests.get')
+@pytest.mark.usefixtures("clearPhotos")
+@pytest.mark.usefixtures("initDB")
+def test_delete_that_exists(requests_get):
+    response = upload_photo(requests_get)
+    assert response.status_code == 201
+    photo_url = response.headers['Location']
+
+    response = client.get(photo_url)
+    assert response.status_code == 200
+
+    response = client.delete(photo_url)
+    assert response.status_code == 200
+
+    response = client.get(photo_url)
+    assert response.status_code == 404
+
+@pytest.mark.usefixtures("clearPhotos")
+@pytest.mark.usefixtures("initDB")
+def test_delete_that_doesnt_exists_throws_404():
+    response = client.delete('doesnt_exists/0')
+    assert response.status_code == 404
+
+def upload_photo(requests_get):
     # here, we force the Photographer service to return 200 OK.
     requests_get.return_value.status_code = 200
     image_file=BytesIO(base64.decodebytes(encoded_image))
 
     files = {'file': image_file}
-    response = client.post('/gallery/joe', files=files)
+    return client.post('/gallery/joe', files=files)
 
     assert response.headers['Location']
     assert response.status_code == 201

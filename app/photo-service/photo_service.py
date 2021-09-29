@@ -63,8 +63,8 @@ def upload_photo(response: Response, display_name:str, file: UploadFile=File(...
         raise HTTPException(status_code = 503, detail = "Mongo unavailable")
 
 @app.get("/photo/{display_name}/{photo_id}", status_code = 200)
-def get_photo(display_name: str, photo_id: int):  
-    logger.info("Get one photo ...")            
+def get_photo(display_name: str, photo_id: int):
+    logger.info("Get one photo ...")
     try:
         ph = mongo_get_photo_by_name_and_id(display_name, photo_id)
         return Response(content=ph.image_file.read(), media_type="image/jpeg")
@@ -77,7 +77,21 @@ def get_photo(display_name: str, photo_id: int):
     except (Photo.MultipleObjectsReturned) as e:
         raise HTTPException(status_code = 500, detail = "Internal Error")
 
-    
+@app.delete("/photo/{display_name}/{photo_id}", status_code = 200)
+def delete_photo(display_name: str, photo_id: int):
+    try:
+        qs = mongo_delete_photo_by_name_and_id(display_name, photo_id)
+        if not qs:
+            raise HTTPException(status_code = 404, detail = "Not Found")
+    except (pymongo.errors.AutoReconnect,
+            pymongo.errors.ServerSelectionTimeoutError,
+            pymongo.errors.NetworkTimeout) as e:
+        raise HTTPException(status_code = 503, detail = "Mongo unavailable")
+    except (Photo.DoesNotExist) as e:
+        raise HTTPException(status_code = 404, detail = "Not Found")
+    except (Photo.MultipleObjectsReturned) as e:
+        raise HTTPException(status_code = 500, detail = "Internal Error")
+
 @app.put("/photo/{display_name}/{photo_id}/attributes", status_code = 200)
 def set_photo_attributes(display_name: str, photo_id: int, attributes: PhotoAttributesNoTags):  
     try:
