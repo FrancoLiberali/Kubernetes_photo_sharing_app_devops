@@ -45,13 +45,53 @@
       notify:
         - start docker
 
-    - name: copy config file
+    - name: add line to docker config file
       lineinfile:
         path: /lib/systemd/system/docker.service
         state: present
         line: Environment="HTTP_PROXY=http://proxy.rennes.enst-bretagne.fr:3128" "HTTPS_PROXY=http://proxy.rennes.enst-bretagne.fr:3128" "NO_PROXY=gitlab-devops.cloud.rennes.enst-bretagne.fr:4567"
       notify:
         - restart docker
+
+    # the last task did not abled us to do docker pull from public repository
+    # so we follow this instructions https://stackoverflow.com/questions/23111631/cannot-download-docker-images-behind-a-proxy
+    - name: Creating a new directory for the config
+      file:
+        path: "/etc/systemd/system/docker.service.d"
+        state: directory
+    - name: Creating the config file
+      file:
+        path: "/etc/systemd/system/docker.service.d/http-proxy.conf"
+        state: touch
+    - name: Create http config for docker
+      copy:
+        dest: /etc/systemd/system/docker.service.d/http-proxy.conf
+        content: |
+        [Service]
+        Environment="HTTP_PROXY=http://proxy.rennes.enst-bretagne.fr:3128"
+        Environment="HTTPS_PROXY=http://proxy.rennes.enst-bretagne.fr:3128"
+        Environment="NO_PROXY=gitlab-devops.cloud.rennes.enst-bretagne.fr:4567"
+      notify:
+        - daemon-reload
+        - restart docker
+    # finish with https://stackoverflow.com/questions/23111631/cannot-download-docker-images-behind-a-proxy
+
+    - name: download CA
+      get_url:
+        url: http://www.cloud.rennes.enst-bretagne.fr/files/docker-lab/root-ca.crt
+        dest: /usr/local/share/ca-certificates/root-ca.crt
+
+    - name: update certificates
+      shell: update-ca-certificates
+
+    - name: reboot VM
+      reboot:
+      notify:
+        - start docker
+
+    # after this manually do
+    # sudo docker login gitlab-devops.cloud.rennes.enst-bretagne.fr:4567
+    # sudo docker pull gitlab-devops.cloud.rennes.enst-bretagne.fr:4567/t19hadda/202102_devops-s21-16/ws
 
   handlers:
   - name: start docker
@@ -63,3 +103,5 @@
     service:
       name: docker
       state: restarted
+  - name: reload systemd
+    command: systemctl daemon-reload
