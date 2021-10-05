@@ -1,0 +1,33 @@
+Host bastion
+  Hostname 10.29.244.138
+  User ubuntu
+
+Host k8s-worker-1
+  Hostname 192.168.10.5
+  ProxyJump bastion
+  User ubuntu
+
+Host k8s-worker-2
+  Hostname 192.168.10.6
+  ProxyJump bastion
+  User ubuntu
+
+Host k8s-worker-3
+  Hostname 192.168.10.7
+  ProxyJump bastion
+  User ubuntu
+
+Host k8s-cont-1
+  Hostname 192.168.10.8
+  ProxyJump bastion
+  User ubuntu
+
+Host k8s-cont-2
+  Hostname 192.168.10.9
+  ProxyJump bastion
+  User ubuntu
+
+Host k8s-cont-3
+  Hostname 192.168.10.10
+  ProxyJump bastion
+  User ubuntu

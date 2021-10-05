@@ -1,0 +1,110 @@
+heat_template_version: rocky
+
+description: Template with 6 kubernetes nodes
+
+parameters:
+  ssh_keys:
+    type: comma_delimited_list
+
+resources:
+  kubernetes_port_1:
+    type: OS::Neutron::Port
+    properties:
+      network_id: private_net
+      security_groups: [ internal_security_group ]
+      fixed_ips:
+        - subnet_id: private_subnet
+          ip_address: 192.168.10.5
+
+  k8s-worker-1:
+    type: vm-template.yaml
+    properties:
+      name: k8s-worker-1
+      flavor: s10.medium
+      network_port: { get_resource: kubernetes_port_1}
+      ssh_keys: {get_param: ssh_keys}
+
+  kubernetes_port_2:
+    type: OS::Neutron::Port
+    properties:
+      network_id: private_net
+      security_groups: [ internal_security_group ]
+      fixed_ips:
+        - subnet_id: private_subnet
+          ip_address: 192.168.10.6
+
+  k8s-worker-2:
+    type: vm-template.yaml
+    properties:
+      name: k8s-worker-2
+      flavor: s10.medium
+      network_port: { get_resource: kubernetes_port_2}
+      ssh_keys: {get_param: ssh_keys}
+
+  kubernetes_port_3:
+    type: OS::Neutron::Port
+    properties:
+      network_id: private_net
+      security_groups: [ internal_security_group ]
+      fixed_ips:
+        - subnet_id: private_subnet
+          ip_address: 192.168.10.7
+
+  k8s-worker-3:
+    type: vm-template.yaml
+    properties:
+      name: k8s-worker-3
+      flavor: s10.medium
+      network_port: { get_resource: kubernetes_port_3}
+      ssh_keys: {get_param: ssh_keys}
+
+  kubernetes_port_4:
+    type: OS::Neutron::Port
+    properties:
+      network_id: private_net
+      security_groups: [ internal_security_group]
+      fixed_ips:
+        - subnet_id: private_subnet
+          ip_address: 192.168.10.8
+
+  k8s-cont-1:
+    type: vm-template.yaml
+    properties:
+      name: k8s-cont-1
+      flavor: s10.medium
+      network_port: { get_resource: kubernetes_port_4}
+      ssh_keys: {get_param: ssh_keys}
+
+  kubernetes_port_5:
+    type: OS::Neutron::Port
+    properties:
+      network_id: private_net
+      security_groups: [ internal_security_group]
+      fixed_ips:
+        - subnet_id: private_subnet
+          ip_address: 192.168.10.9
+
+  k8s-cont-2:
+    type: vm-template.yaml
+    properties:
+      name: k8s-cont-2
+      flavor: s10.medium
+      network_port: { get_resource: kubernetes_port_5}
+      ssh_keys: {get_param: ssh_keys}
+
+  kubernetes_port_6:
+    type: OS::Neutron::Port
+    properties:
+      network_id: private_net
+      security_groups: [ internal_security_group]
+      fixed_ips:
+        - subnet_id: private_subnet
+          ip_address: 192.168.10.10
+
+  k8s-cont-3:
+    type: vm-template.yaml
+    properties:
+      name: k8s-cont-3
+      flavor: s10.medium
+      network_port: { get_resource: kubernetes_port_6}
+      ssh_keys: {get_param: ssh_keys}
