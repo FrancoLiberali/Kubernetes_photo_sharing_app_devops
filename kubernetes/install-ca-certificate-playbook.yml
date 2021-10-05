@@ -1,0 +1,43 @@
+---
+- hosts: all
+  remote_user: root
+  become: yes
+  tasks:
+    - name: Export proxy
+      shell: export http_proxy=http://proxy.rennes.enst-bretagne.fr:3128 & export https_proxy=http://proxy.rennes.enst-bretagne.fr:3128
+    - name: Install prerequisites
+      apt:
+        pkg:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - gnupg-agent
+          - software-properties-common
+        update_cache: yes
+      environment:
+          https_proxy: http://proxy.rennes.enst-bretagne.fr:3128
+          http_proxy: http://proxy.rennes.enst-bretagne.fr:3128
+
+    - name: download CA
+      get_url:
+        url: http://www.cloud.rennes.enst-bretagne.fr/files/docker-lab/root-ca.crt
+        dest: /usr/local/share/ca-certificates/root-ca.crt
+
+    - name: update certificates
+      shell: update-ca-certificates
+
+    - name: reboot VM
+      reboot:
+      notify:
+        - start docker
+
+    # after this manually do
+    # sudo docker login gitlab-devops.cloud.rennes.enst-bretagne.fr:4567
+    # sudo docker pull gitlab-devops.cloud.rennes.enst-bretagne.fr:4567/t19hadda/202102_devops-s21-16/ws
+
+  handlers:
+  - name: start docker
+    service:
+      name: docker
+      state: started
+      enabled: yes
