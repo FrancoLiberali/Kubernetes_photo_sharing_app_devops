@@ -10,8 +10,7 @@ test_photographer:
   - cd app/photographer-service
   - pytest -v -p no:warnings
   services:
-    - name: mongo
-      alias: mongo-service-test
+    - mongo
 
 # build_photographer:
 #   stage: release
