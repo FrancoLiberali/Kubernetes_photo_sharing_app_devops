@@ -10,8 +10,9 @@ test_photographer:
   - cd app/photographer-service
   - pytest -v -p no:warnings
   services:
-    - mongo-service-test
-    
+    - name: mongo
+      alias: mongo-service-test
+
 # build_photographer:
 #   stage: release
 #   image: $CI_REGISTRY/devops/shared/docker:proxy
