@@ -10,11 +10,12 @@ test_photographer:
     DB_HOST: mongo
   script:
   #- mongo --host $DB_HOST --eval "use photographers_test"
-  - ping mongo -c 5
+  #- ping mongo -c 5
   - cd app/photographer-service
   - pytest -v -p no:warnings
   services:
-    - mongo
+    - name: mongo:4.4-rc
+      alias: mongo
 
 # build_photographer:
 #   stage: release
