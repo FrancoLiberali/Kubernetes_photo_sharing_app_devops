@@ -10,7 +10,7 @@ test_photographer:
   - cd app/photographer-service
   - pytest -v -p no:warnings
   services:
-    - mongo
+    - mongodb
 
 # build_photographer:
 #   stage: release
