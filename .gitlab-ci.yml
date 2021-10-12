@@ -10,6 +10,7 @@ test_photographer:
     DB_HOST: mongo
   script:
   #- mongo --host $DB_HOST --eval "use photographers_test"
+  - ping mongo -c 5
   - cd app/photographer-service
   - pytest -v -p no:warnings
   services:
