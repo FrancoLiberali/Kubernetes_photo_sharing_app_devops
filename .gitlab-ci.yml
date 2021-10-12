@@ -6,7 +6,10 @@ stages:
 test_photographer:
   stage: test
   image: $CI_REGISTRY/$CI_PROJECT_PATH/photoapptest
+  variables:
+    DB_HOST: mongo
   script:
+  - mongo --host $DB_HOST --eval "use photographers_test"
   - cd app/photographer-service
   - pytest -v -p no:warnings
   services:
