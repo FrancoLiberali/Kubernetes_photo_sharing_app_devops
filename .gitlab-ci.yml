@@ -9,7 +9,7 @@ test_photographer:
   variables:
     DB_HOST: mongo
   script:
-  - mongo --host $DB_HOST --eval "use photographers_test"
+  #- mongo --host $DB_HOST --eval "use photographers_test"
   - cd app/photographer-service
   - pytest -v -p no:warnings
   services:
