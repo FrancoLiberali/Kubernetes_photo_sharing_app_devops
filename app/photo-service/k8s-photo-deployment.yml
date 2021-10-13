@@ -12,7 +12,7 @@ spec:
   template:
     metadata:
       labels:
-        app: photog-service
+        app: photo-service
     spec:
       containers:
       - name: k8s-photo-service
