@@ -13,6 +13,16 @@ test_photographer:
     - name: mongo:4.4-rc
       alias: mongo-service-test
 
+test_photo:
+  stage: test
+  image: $CI_REGISTRY/$CI_PROJECT_PATH/photoapptest
+  script:
+  - cd app/photo-service
+  - pytest -v -p no:warnings
+  services:
+    - name: mongo:4.4-rc
+      alias: mongo-service-test
+
 build_photographer:
   stage: release
   image: $CI_REGISTRY/devops/shared/docker:proxy
