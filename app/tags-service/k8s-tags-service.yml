@@ -7,7 +7,7 @@ spec:
   ports:
   - port: 50051
     protocol: TCP
-    nodePort: 30302
+    nodePort: 30303
     targetPort: 50051
   selector:
     app: tag-service
