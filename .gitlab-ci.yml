@@ -1,7 +1,7 @@
 stages:
   - test
   - release
-  # - deploy
+  - deploy
   
 test_photographer:
   stage: test
@@ -22,14 +22,14 @@ build_photographer:
     - docker build -t $CI_REGISTRY/$CI_PROJECT_PATH/photographer:${CI_COMMIT_SHORT_SHA} --network=host .
     - docker push $CI_REGISTRY/$CI_PROJECT_PATH/photographer:${CI_COMMIT_SHORT_SHA}
 
-# deploy_photographer:
-#   stage: deploy
-#   image:
-#     name: bitnami/kubectl
-#     entrypoint: [""]
-#   script:
-#     - cd app/photographer-service
-#     - sed -i "s/:latest/:${CI_COMMIT_SHORT_SHA}/g" k8s-photographer.yml
-#     - kubectl apply -f k8s-photographer-deployment.yml
-#   environment:
-#     name: production
+deploy_photographer:
+  stage: deploy
+  image:
+    name: bitnami/kubectl
+    entrypoint: [""]
+  script:
+    - cd app/photographer-service
+    - sed -i "s/:latest/:${CI_COMMIT_SHORT_SHA}/g" k8s-photographer.yml
+    - kubectl apply -f k8s-photographer-deployment.yml
+  environment:
+    name: production
