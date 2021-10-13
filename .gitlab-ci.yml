@@ -1,6 +1,6 @@
 stages:
   - test
-  # - release
+  - release
   # - deploy
   
 test_photographer:
@@ -13,14 +13,14 @@ test_photographer:
     - name: mongo:4.4-rc
       alias: mongo-service-test
 
-# build_photographer:
-#   stage: release
-#   image: $CI_REGISTRY/devops/shared/docker:proxy
-#   script:
-#     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY 
-#     - cd app/photographer-service
-#     - docker build -t $CI_REGISTRY/$CI_PROJECT_PATH/photographer:${CI_COMMIT_SHORT_SHA} --network=host .
-#     - docker push $CI_REGISTRY/$CI_PROJECT_PATH/photographer:${CI_COMMIT_SHORT_SHA}
+build_photographer:
+  stage: release
+  image: $CI_REGISTRY/devops/shared/docker:proxy
+  script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - cd app/photographer-service
+    - docker build -t $CI_REGISTRY/$CI_PROJECT_PATH/photographer:${CI_COMMIT_SHORT_SHA} --network=host .
+    - docker push $CI_REGISTRY/$CI_PROJECT_PATH/photographer:${CI_COMMIT_SHORT_SHA}
 
 # deploy_photographer:
 #   stage: deploy
