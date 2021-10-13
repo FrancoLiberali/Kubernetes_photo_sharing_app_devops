@@ -6,4 +6,3 @@ ENV GRACEFUL_TIMEOUT=10
 RUN python3 -m pip install --upgrade pip
 RUN pip3 install --no-cache-dir --trusted-host pypi.python.org mongoengine requests
 EXPOSE 80
-CMD start-reload.sh
