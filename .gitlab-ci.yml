@@ -55,3 +55,16 @@ deploy_photographer:
     - kubectl apply -f k8s-photographer-service.yml
   environment:
     name: production
+
+deploy_photo:
+  stage: deploy
+  image:
+    name: bitnami/kubectl
+    entrypoint: [""]
+  script:
+    - cd app/photo-service
+    - sed -i "s/:latest/:${CI_COMMIT_SHORT_SHA}/g" k8s-photo-deployment.yml
+    - kubectl apply -f k8s-photo-deployment.yml
+    - kubectl apply -f k8s-photo-service.yml
+  environment:
+    name: production

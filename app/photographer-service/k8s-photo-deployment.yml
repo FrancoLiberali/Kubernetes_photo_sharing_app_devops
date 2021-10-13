@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: photo-service-deployment
+  labels:
+    app: photo-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: photo-service
+  template:
+    metadata:
+      labels:
+        app: photog-service
+    spec:
+      containers:
+      - name: k8s-photo-service
+        image: gitlab-devops.cloud.rennes.enst-bretagne.fr:4567/t21haddaji/202102_devops-s21-16/photo:latest
+        ports:
+        - containerPort: 80
+      imagePullSecrets:
+      - name: regcred
