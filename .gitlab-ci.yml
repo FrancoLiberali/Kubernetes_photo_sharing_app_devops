@@ -22,7 +22,7 @@ test_photo:
   services:
     - name: mongo:4.4-rc
       alias: mongo-service-test
-    - name: $CI_REGISTRY/$CI_PROJECT_PATH/tags:latest
+    - name: gitlab-devops.cloud.rennes.enst-bretagne.fr:4567/devops/shared/tags:latest
       alias: tags-service-test
 
 build_photographer:
@@ -66,5 +66,17 @@ deploy_photo:
     - sed -i "s/:latest/:${CI_COMMIT_SHORT_SHA}/g" k8s-photo-deployment.yml
     - kubectl apply -f k8s-photo-deployment.yml
     - kubectl apply -f k8s-photo-service.yml
+  environment:
+    name: production
+
+deploy_tags:
+  stage: deploy
+  image:
+    name: bitnami/kubectl
+    entrypoint: [""]
+  script:
+    - cd app/tags-service
+    - kubectl apply -f k8s-tags-deployment.yml
+    - kubectl apply -f k8s-tags-service.yml
   environment:
     name: production

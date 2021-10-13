@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tag-service-deployment
+  labels:
+    app: tag-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tag-service
+  template:
+    metadata:
+      labels:
+        app: tag-service
+    spec:
+      containers:
+      - name: k8s-tag-service
+        image: gitlab-devops.cloud.rennes.enst-bretagne.fr:4567/devops/shared/tags:latest
+        ports:
+        - containerPort: 50051
+      imagePullSecrets:
+      - name: regcred
