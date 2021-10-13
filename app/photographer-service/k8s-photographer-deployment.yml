@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: photographer-service-deployment
+  labels:
+    app: photographer-service
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: photographer-service
+  template:
+    metadata:
+      labels:
+        app: photographer-service
+    spec:
+      containers:
+      - name: k8s-photographer-service
+        image: gitlab-devops.cloud.rennes.enst-bretagne.fr:4567/t21haddaji/202102_devops-s21-16/photographer
+        ports:
+        - containerPort: 8000
+      imagePullSecrets:
+      - name: regcred
