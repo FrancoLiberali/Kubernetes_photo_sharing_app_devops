@@ -22,6 +22,8 @@ test_photo:
   services:
     - name: mongo:4.4-rc
       alias: mongo-service-test
+    - name: $CI_REGISTRY/$CI_PROJECT_PATH/tags:latest
+      alias: tags-service-test
 
 build_photographer:
   stage: release

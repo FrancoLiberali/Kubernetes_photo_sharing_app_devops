@@ -1,13 +1,16 @@
 import pytest
 from starlette.testclient import TestClient
 from bson import json_util
-from photo_service import app
 import base64, zlib, shutil
 from io import BytesIO
 
 import unittest.mock
 
+from tags import TagsClient
+from photo_service import app, tags_client
+
 client = TestClient(app)
+tags_client.connect("tags-service-test:50051")
 
 
 @unittest.mock.patch('photo_service.requests.get')
