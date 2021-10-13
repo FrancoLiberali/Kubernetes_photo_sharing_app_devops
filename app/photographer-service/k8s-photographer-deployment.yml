@@ -18,6 +18,6 @@ spec:
       - name: k8s-photographer-service
         image: gitlab-devops.cloud.rennes.enst-bretagne.fr:4567/t21haddaji/202102_devops-s21-16/photographer:latest
         ports:
-        - containerPort: 8000
+        - containerPort: 80
       imagePullSecrets:
       - name: regcred
