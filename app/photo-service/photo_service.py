@@ -20,11 +20,9 @@ tags_client = TagsClient()
 
 photographer_service_host = 'photographer-service:80'
 tags_service_host = 'tags-service:50051'
-mongo_service_host = 'mongo-service'
 
 photographer_service = 'http://' + photographer_service_host + '/'
 tags_service = tags_service_host
-mongo_service = mongo_service_host
 
 photo_all_attributes = ['title', 'comment', 'location', 'author']
 
@@ -36,7 +34,10 @@ logger.handlers = gunicorn_logger.handlers
 
 @app.on_event("startup")
 def startup_event():
-    connect("photos", host= mongo_service)
+    connect("g16-photo-db",
+            username="g16-user",
+            password="xYyR4FPh4W79YY6vWiDm",
+            host="mongo.cloud.rennes.enst-bretagne.fr")
     tags_client.connect(tags_service)
 
 

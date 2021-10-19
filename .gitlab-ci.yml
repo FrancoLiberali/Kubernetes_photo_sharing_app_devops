@@ -2,7 +2,7 @@ stages:
   - test
   - release
   - deploy
-  
+
 test_photographer:
   stage: test
   image: $CI_REGISTRY/$CI_PROJECT_PATH/photoapptest

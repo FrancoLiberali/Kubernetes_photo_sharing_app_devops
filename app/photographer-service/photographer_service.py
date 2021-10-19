@@ -30,14 +30,9 @@ logger.handlers = gunicorn_logger.handlers
 
 @app.on_event("startup")
 def startup_event():
-    # connect("photographers", host=mongo_service)
-    # connect("devops-s21-00-photographer-db",
-    #         username="devops-s21-00-user",
-    #         password="***",
-    #         host="mongo.cloud.rennes.enst-bretagne.fr")
     connect("g16-photographer-db",
             username="g16-user",
-            password="JIqiNn7WQaDgVHs-V,OO",
+            password="xYyR4FPh4W79YY6vWiDm",
             host="mongo.cloud.rennes.enst-bretagne.fr")
 
 @app.get("/photographers", response_model = Photographers, status_code = 200)
