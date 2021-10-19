@@ -1,0 +1,25 @@
+heat_template_version: rocky
+
+description: Template with 1 monitoring VM
+
+parameters:
+  ssh_keys:
+    type: comma_delimited_list
+
+resources:
+  monitoring_port:
+    type: OS::Neutron::Port
+    properties:
+      network_id: private_net
+      security_groups: [ internal_security_group ]
+      fixed_ips:
+        - subnet_id: private_subnet
+          ip_address: 192.168.10.11
+
+  k8s-monitoring:
+    type: vm-template.yaml
+    properties:
+      name: k8s-monitoring
+      flavor: s10.medium
+      network_port: { get_resource: monitoring_port}
+      ssh_keys: {get_param: ssh_keys}
