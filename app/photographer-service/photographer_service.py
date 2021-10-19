@@ -17,10 +17,6 @@ from photographer_const import Dname, Photographer, PHOTOGRAPHER_BODY, Photograp
 from photographer import MongoPhotographer
 import re
 
-mongo_service_host = 'mongo-service'
-
-mongo_service = mongo_service_host
-
 app = FastAPI(title = "Photographer Service")
 
 # FastAPI logging
@@ -32,7 +28,7 @@ logger.handlers = gunicorn_logger.handlers
 def startup_event():
     connect("g16-photographer-db",
             username="g16-user",
-            password="xYyR4FPh4W79YY6vWiDm",
+            password="JIqiNn7WQaDgVHs-V,OO",
             host="mongo.cloud.rennes.enst-bretagne.fr")
 
 @app.get("/photographers", response_model = Photographers, status_code = 200)
