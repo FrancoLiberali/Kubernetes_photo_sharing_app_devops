@@ -1,0 +1,50 @@
+---
+
+- hosts: all
+
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+    proxy_env:
+      http_proxy: http://proxy.enst-bretagne.fr:8080
+      https_proxy: http://proxy.enst-bretagne.fr:8080
+
+  tasks:
+    - name: Add repository key
+      apt_key:
+        url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+        state: present
+      environment: "{{ proxy_env }}"
+      become: true
+
+    - name: Add repository
+      apt_repository:
+        repo: deb https://artifacts.elastic.co/packages/7.x/apt stable main
+        state: present
+      environment: "{{ proxy_env }}"
+      become: true
+
+    - name: Install Elasticsearch
+      become: true
+      apt:
+        name: elasticsearch
+        update_cache: true
+        state: present
+
+    - name: Copy Elasticsearch config file
+      become: true
+      copy:
+        src: elasticsearch.yml
+        dest: /etc/elasticsearch/elasticsearch.yml
+        owner: root
+        group: elasticsearch
+        
+    - name: Start Elasticsearch
+      become: true
+      systemd:
+        enabled: yes
+        state: restarted
+        daemon_reload: yes
+        name: elasticsearch
+
+
+

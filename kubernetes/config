@@ -31,3 +31,8 @@ Host k8s-cont-3
   Hostname 192.168.10.10
   ProxyJump bastion
   User ubuntu
+
+Host k8s-monitoring
+  Hostname 192.168.10.11
+  ProxyJump bastion
+  User ubuntu
