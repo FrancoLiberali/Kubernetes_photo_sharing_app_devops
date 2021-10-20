@@ -3,11 +3,8 @@ kind: Service
 metadata:
   name: tags-service
 spec:
-  type: NodePort
   ports:
   - port: 50051
     protocol: TCP
-    nodePort: 30303
-    targetPort: 50051
   selector:
     app: tags-service
