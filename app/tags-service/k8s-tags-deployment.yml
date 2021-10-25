@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: tag-service-deployment
+  name: tags-service-deployment
   labels:
-    app: tag-service
+    app: tags-service
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: tag-service
+      app: tags-service
   template:
     metadata:
       labels:
-        app: tag-service
+        app: tags-service
     spec:
       containers:
-      - name: k8s-tag-service
+      - name: k8s-tags-service
         image: gitlab-devops.cloud.rennes.enst-bretagne.fr:4567/devops/shared/tags:latest
         ports:
         - containerPort: 50051
