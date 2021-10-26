@@ -155,8 +155,7 @@ def get_photos(request: Request, display_name: str,  offset: int = 0, limit: int
                         ph._data.pop('author')
                         ph._data.pop('location')
                         ph._data.pop('tags')
-                        host_part = re.match("http://([^/]*)/", str(request.url)).group()
-                        ph._data['link'] = host_part +  "photo/" + display_name + "/" + str(ph.photo_id)
+                        ph._data['link'] = "/photo/" + display_name + "/" + str(ph.photo_id)
                         list_of_photos.append(ph._data)
             except (pymongo.errors.AutoReconnect,
                     pymongo.errors.ServerSelectionTimeoutError,

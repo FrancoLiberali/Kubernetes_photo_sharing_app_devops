@@ -38,7 +38,7 @@ def get_photographers(request: Request, offset: int = 0, limit: int = 10):
     try:
         (has_more, photographers) = mongo_get_photographers(offset, limit)
         for ph in photographers:
-            ph._data['link'] = "http://" + request.headers['host'] + "/photographer/" + str(ph.display_name)
+            ph._data['link'] = "/photographer/" + str(ph.display_name)
             list_of_photographers.append(ph._data)
     except pymongo.errors.ServerSelectionTimeoutError:
         raise HTTPException(status_code=503, detail="Mongo unavailable")
